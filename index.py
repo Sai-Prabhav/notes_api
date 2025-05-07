@@ -7,19 +7,40 @@ import pymongo
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS, cross_origin
-
-
-DB_URI = "mongodb://localhost:27017/"
-myclient = pymongo.MongoClient(DB_URI)
-
-mydb = myclient["Notes"]
-mycol = mydb["Users"]
-print(list(mycol.find({})))
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 load_dotenv()
 jwt_secret = os.getenv(
     "jwt_secret",
 )
+db_password = os.getenv(
+    "db_password",
+)
+db_user = os.getenv(
+    "db_user",
+)
+
+
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = f"mongodb+srv://{db_user}:{db_password}@cluster0.3rlu3lj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi("1"))
+
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command("ping")
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+mydb = client["Notes"]
+mycol = mydb["Users"]
+print(list(mycol.find({})))
 
 
 def check_token(token):
@@ -90,7 +111,7 @@ def save():
     data = request.get_json()
     print(data)
     token = data["token"]
-    note= data["notes"]
+    note = data["notes"]
     if not (token and note):
         return jsonify({"message": "Please provide all fields."}), 400
     jwt_data = check_token(token)
@@ -113,7 +134,7 @@ def get_notes():
     print(request.data)
     data = request.get_json()
     token = data["token"]
-    if not ( token):
+    if not (token):
         return jsonify({"message": "Please provide all fields."}), 400
     jwt_data = check_token(token)
     if not jwt_data:
@@ -124,7 +145,7 @@ def get_notes():
     if not user:
         return jsonify({"message": "User not found."}), 404
     notes = user.get("notes", [])
-    return jsonify(notes) 
+    return jsonify(notes)
 
 
 app.run(debug=True)

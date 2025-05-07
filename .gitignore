@@ -2,3 +2,4 @@
 /.venv
 __pycache__/server.cpython-312.pyc
 .vercel
+__pycache__/index.cpython-312.pyc
