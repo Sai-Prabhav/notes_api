@@ -21,7 +21,7 @@ db_user = os.environ.get(
 
 
 uri = f"mongodb+srv://{db_user}:{db_password}@cluster0.3rlu3lj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
+print(uri)
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi("1"))
