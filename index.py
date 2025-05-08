@@ -166,4 +166,4 @@ def get_notes():
     return jsonify(notes)
 
 
-app.run(debug=True)
+app.run()
