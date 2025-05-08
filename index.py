@@ -4,9 +4,9 @@ from datetime import datetime, timezone, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import pymongo
+from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import os
-from flask_cors import CORS, cross_origin
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
@@ -22,9 +22,6 @@ db_user = os.getenv(
 )
 
 
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-
 uri = f"mongodb+srv://{db_user}:{db_password}@cluster0.3rlu3lj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 
@@ -38,7 +35,7 @@ try:
 except Exception as e:
     print(e)
 
-mydb = client["Notes"]
+mydb = client["notes"]
 mycol = mydb["Users"]
 print(list(mycol.find({})))
 
@@ -55,7 +52,22 @@ def check_token(token):
 
 
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(
+    app,
+    supports_credentials=True,
+    origins="*",
+)
+
+
+# @app.after_request
+# def after_request(response):
+#     response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")  # list all needed headers
+#     response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT") 
+#     response.headers.add("Access-Control-Allow-Origin", "*")
+    # response.headers.add("Access-Control-Allow-Credentials", "true")
+    # response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+   
+    # return response
 
 
 @app.route("/register", methods=["POST"])
@@ -64,12 +76,14 @@ def register():
 
     name = request.get_json()["name"]
     password = request.get_json()["password"]
-
+    print(name, password,'hello')
+    if not (name and password):
+        return jsonify({"message": "Please provide all fields."}), 400
     existing_user = mycol.find_one({"name": name})
     if existing_user:
         print("User already exists. Please login.")
         return jsonify({"message": "User already exists. Please login."}), 400
-
+    
     hashed_password = generate_password_hash(password)
     user_id = str(uuid.uuid4())
     new_user = {
@@ -82,7 +96,7 @@ def register():
     return jsonify({"message": "User registered successfully."}), 201
 
 
-@app.route("/login", methods=["POST", "OPTIONS"])
+@app.route("/login", methods=["POST"])
 @cross_origin()
 def login():
     print(request.data)
@@ -128,7 +142,7 @@ def save():
     return jsonify({"message": "Note saved successfully."}), 200
 
 
-@app.route("/get-notes", methods=["POST", "OPTIONS"])
+@app.route("/get-notes", methods=["POST"])
 @cross_origin()
 def get_notes():
     print(request.data)
