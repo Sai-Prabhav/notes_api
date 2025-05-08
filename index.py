@@ -5,25 +5,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import pymongo
 from flask_cors import CORS, cross_origin
-from dotenv import load_dotenv
 import os
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-load_dotenv()
-jwt_secret = os.getenv(
+jwt_secret = os.environ.get(
     "jwt_secret",
 )
-db_password = os.getenv(
+db_password = os.environ.get(
     "db_password",
 )
-db_user = os.getenv(
+db_user = os.environ.get(
     "db_user",
 )
 
 
 uri = f"mongodb+srv://{db_user}:{db_password}@cluster0.3rlu3lj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-print(uri)
+
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi("1"))
