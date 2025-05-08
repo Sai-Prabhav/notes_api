@@ -69,6 +69,10 @@ cors = CORS(
    
     # return response
 
+@app.route("/")
+@cross_origin()
+def index():
+    return "Hello, World!"
 
 @app.route("/register", methods=["POST"])
 @cross_origin()
