@@ -9,16 +9,18 @@ import os
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-jwt_secret = os.environ.get(
-    "jwt_secret",
-)
-db_password = os.environ.get(
-    "db_password",
-)
-db_user = os.environ.get(
-    "db_user",
-)
-
+# jwt_secret = os.environ.get(
+#     "jwt_secret",
+# )
+# db_password = os.environ.get(
+#     "db_password",
+# )
+# db_user = os.getenv(
+#     "db_user",
+# )
+jwt_secret="new_secret"
+db_password="jd0OMZpHGQKuDAVM"
+db_user="user1"
 
 uri = f"mongodb+srv://{db_user}:{db_password}@cluster0.3rlu3lj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 print(uri)
