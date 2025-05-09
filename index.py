@@ -18,7 +18,7 @@ from pymongo.server_api import ServerApi
 # db_user = os.getenv(
 #     "db_user",
 # )
-jwt_secret="new_secret"
+jwt_secret="new_secret"ko
 db_password="jd0OMZpHGQKuDAVM"
 db_user="user1"
 
